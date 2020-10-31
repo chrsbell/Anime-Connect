@@ -1,14 +1,14 @@
 {
-  "name": "github-fetcher-fullstack-v2",
+  "name": "anime-list",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
-  "scripts": {
-    "react-dev": "webpack -d --watch",
-    "server-dev": "nodemon server/index.js"
-  },
-  "author": "Beth Johnson",
+  "author": "Chris Bell",
   "license": "ISC",
+  "scripts": {
+    "start": "nodemon server/index.js",
+    "react-dev": "webpack -d --watch",
+    "react": "webpack -p"
+  },
   "devDependencies": {
     "babel-core": "^6.23.1",
     "babel-loader": "^6.3.2",
@@ -17,12 +17,8 @@
     "webpack": "^2.2.1"
   },
   "dependencies": {
-    "angular": "^1.6.3",
-    "body-parser": "^1.17.2",
     "express": "^4.15.0",
-    "jquery": "^3.1.1",
     "mongoose": "^4.8.6",
-    "mysql": "^2.13.0",
     "react": "^15.4.2",
     "react-dom": "^15.4.2"
   }
