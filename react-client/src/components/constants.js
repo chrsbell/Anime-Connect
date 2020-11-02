@@ -3,6 +3,7 @@ const Endpoints = {
   browse: '/browse/',
   connect: '/connect/',
   login: '/login/',
+  signup: '/signup/',
 };
 
 export { Endpoints };

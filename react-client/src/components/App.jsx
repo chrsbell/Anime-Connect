@@ -1,10 +1,13 @@
 import React from 'react';
 import axios from 'axios';
 import { Grommet } from 'grommet';
-import AppHeader from './Header.jsx';
-import { Router, Route, Link, withRouter } from 'react-router';
+import { grommet } from 'grommet/themes';
+import { Router, Route } from 'react-router';
 import history from './history';
 import { Endpoints } from './constants.js';
+import AppHeader from './AppHeader.jsx';
+import SignUpForm from './SignUpForm.jsx';
+import LoginForm from './LoginForm.jsx';
 
 class App extends React.Component {
   constructor(props) {
@@ -23,6 +26,7 @@ class App extends React.Component {
   }
 
   // start the MAL authentication process
+  // login details -> authenticate
   authenticate() {
     axios.get('/oauth').then((res) => {
       const { redirectURL } = res.data;
@@ -36,9 +40,15 @@ class App extends React.Component {
   render() {
     return (
       <Router history={history}>
-        <Grommet plain>
-          <AppHeader history={history} loginCallback={this.authenticate} />
-          <h1>Item List</h1>
+        <Grommet full theme={grommet}>
+          <AppHeader history={history} />
+          <Route path={Endpoints.browse}></Route>
+          <Route path={Endpoints.login}>
+            <LoginForm history={history} authenticate={this.authenticate} />
+          </Route>
+          <Route path={Endpoints.signup}>
+            <SignUpForm history={history} authenticate={this.authenticate} />
+          </Route>
         </Grommet>
       </Router>
     );
