@@ -14,7 +14,12 @@ const staticFiles = express.static(__dirname + '/../react-client/dist');
 app.use('/', staticFiles);
 app.use('/browse/', staticFiles);
 app.use('/connect/', staticFiles);
-app.use('/login/', staticFiles);
+
+// Anime info API
+app.use('/anime', animeRoute);
+
+// User API
+app.use('/user', userRoute);
 
 // Anime info API
 app.use('/anime', animeRoute);
