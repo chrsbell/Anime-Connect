@@ -5,15 +5,17 @@ const app = express();
 
 app.use(express.json());
 
-app.use(express.static(__dirname + '/../react-client/dist'));
+const staticFiles = express.static(__dirname + '/../react-client/dist');
+
+// use the same app for all endpoints
+app.use('/', staticFiles);
+app.use('/browse/', staticFiles);
+app.use('/connect/', staticFiles);
+app.use('/login/', staticFiles);
 
 // MAL user authentication
 app.use('/oauth', oauth.authenticate);
 
-app.get('/items', (req, res) => {
-  res.sendStatus(200);
-});
-
-app.listen(3000, function() {
+app.listen(3000, function () {
   console.log('Listening at http://localhost:3000');
 });

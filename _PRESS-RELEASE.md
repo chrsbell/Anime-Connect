@@ -1,4 +1,4 @@
-# Project Name #
+# Project Name
 
 <!--
 > This material was originally posted [here](http://www.quora.com/What-is-Amazons-approach-to-product-development-and-product-management). It is reproduced here for posterities sake.
@@ -16,29 +16,38 @@ Oh, and I also like to write press-releases in what I call "Oprah-speak" for mai
 Once the project moves into development, the press release can be used as a touchstone; a guiding light. The product team can ask themselves, "Are we building what is in the press release?" If they find they're spending time building things that aren't in the press release (overbuilding), they need to ask themselves why. This keeps product development focused on achieving the customer benefits and not building extraneous stuff that takes longer to build, takes resources to maintain, and doesn't provide real customer benefit (at least not enough to warrant inclusion in the press release).
  -->
 
-## Heading ##
-  > An app that lets you log in and view your saved anime lists, browse seasonal anime, and view suggested anime.
+## Heading
 
-## Sub-Heading ##
-  > Anyone that likes anime and uses MAL!
+> An app that lets you log in and view your saved anime lists, browse seasonal anime, and view suggested anime. It can also suggest friends and groups based on your interests.
 
-## Summary ##
-  > This app will primarily suggest new anime to users who log in. Users can easily save suggestions and view their lists as well as browse seasonal anime. Each anime will have associated genre, user rating, watched status, and overall rating on top of the basics.
+## Sub-Heading
 
-## Problem ##
-  > The official MAL site feels somewhat cluttered and difficult to find relevant suggestions for the average user or someone new to anime. I want to introduce the medium to people new to the genre in a simple but elegant way.
+> Anyone that likes anime and uses MAL!
 
-## Solution ##
-  > Sorting lists or filtering by season will be more straightforward than the MAL site. I would like to implement multiple lists, filtering, viewing detailed anime info through a modal and adding shows to lists in the same scrollable view.
+## Summary
 
-## Quote from You ##
-  > Make it mainstream
+> This app will primarily suggest new anime to users who log in and connect users with similar tastes. Users can easily save suggestions and view their lists as well as browse seasonal anime. Each anime will have associated genre, user rating, watched status, and overall rating on top of the basics.
 
-## How to Get Started ##
-  > All that you need to get started will be your login info from MAL (optional)
+## Problem
 
-## Customer Quote ##
-  > I love how easy it is to browse anime by categories and seasons!
+> The official MAL site feels somewhat cluttered and difficult to find relevant suggestions for the average user or someone new to anime. I also find it difficult to meet people who also enjoy anime online. Lastly I want to introduce the medium to people new to the genre in a simple but elegant way.
 
-## Closing and Call to Action ##
-  > Check out the app and make sharing your anime simple again!
+## Solution
+
+> Sorting lists or filtering by season will be more straightforward than the MAL site. I would like to implement multiple lists, filtering, viewing detailed anime info through a modal and adding shows to lists in the same scrollable view.
+
+## Quote from You
+
+> Make it mainstream
+
+## How to Get Started
+
+> All that you need to get started will be your login info from MAL
+
+## Customer Quote
+
+> I love how easy it is to browse anime by categories and seasons!
+
+## Closing and Call to Action
+
+> Check out the app and make sharing your anime simple/fun again!
