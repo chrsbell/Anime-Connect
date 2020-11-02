@@ -5,8 +5,9 @@ import { grommet } from 'grommet/themes';
 import { Endpoints } from './constants.js';
 
 class AppHeader extends React.Component {
-  constructor({ history }) {
+  constructor({ history, loginCallback }) {
     super();
+    this.loginCallback = loginCallback;
     this.history = history;
   }
 
@@ -41,9 +42,12 @@ class AppHeader extends React.Component {
                         onClick: () => {
                           this.history.push(Endpoints.connect);
                         },
+                      },
+                      {
                         label: <Box pad="small">Login</Box>,
                         onClick: () => {
                           this.history.push(Endpoints.login);
+                          this.loginCallback();
                         },
                       },
                     ]}
@@ -66,6 +70,8 @@ class AppHeader extends React.Component {
                   <Anchor
                     onClick={() => {
                       this.history.push(Endpoints.login);
+                      debugger;
+                      this.loginCallback();
                     }}
                     label="Login"
                   />

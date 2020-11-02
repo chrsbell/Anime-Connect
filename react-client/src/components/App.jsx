@@ -9,6 +9,7 @@ import { Endpoints } from './constants.js';
 class App extends React.Component {
   constructor(props) {
     super(props);
+    this.authenticate = this.authenticate.bind(this);
   }
 
   componentDidMount() {
@@ -36,7 +37,7 @@ class App extends React.Component {
     return (
       <Router history={history}>
         <Grommet plain>
-          <AppHeader history={history} />
+          <AppHeader history={history} loginCallback={this.authenticate} />
           <h1>Item List</h1>
         </Grommet>
       </Router>
