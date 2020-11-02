@@ -9,14 +9,8 @@ let code_challenge = pkceChallenge(128).code_challenge;
 let code_verifier = code_challenge;
 let code = null;
 
-// MAL user specific data
-let tokenType = null;
-let expiresIn = null;
-let accessToken = null;
-let refreshToken = null;
-
 // Get an authorization code from MAL
-const authorizeUser = async (req, res) => {
+const authenticateUser = async (req, res) => {
   const url = 'https://myanimelist.net/v1/oauth2/authorize';
   const params = {
     response_type: 'code',
@@ -33,7 +27,7 @@ const authorizeUser = async (req, res) => {
 };
 
 // Get the MAL user's access token
-const getAccessToken = async (req, res) => {
+const authenticateUserToken = async (req, res) => {
   const options = {
     url: 'https://myanimelist.net/v1/oauth2/token',
     method: 'post',
@@ -49,11 +43,11 @@ const getAccessToken = async (req, res) => {
     }),
   };
   const { data } = await axios(options);
-  // save this data to mongo
-  tokenType = data.token_type;
-  expiresIn = data.expires_in;
-  accessToken = data.access_token;
-  refreshToken = data.refresh_token;
+  OAuth.tokenType = data.token_type;
+  OAuth.expiresIn = data.expires_in;
+  OAuth.accessToken = data.access_token;
+  console.log(data.access_token);
+  OAuth.refreshToken = data.refresh_token;
   res.redirect('/');
 };
 
@@ -67,28 +61,27 @@ const authenticate = async (req, res) => {
     res.redirect('/');
   }
 
-  // try looking up user data from mongo
-
   // try getting the authorization code from the url
   if (!code) {
     code = req.query.code;
   }
   if (!code) {
-    await authorizeUser(req, res);
-  } else if (!accessToken) {
-    await getAccessToken(req, res);
+    await authenticateUser(req, res);
+  } else if (!OAuth.accessToken) {
+    await authenticateUserToken(req, res);
   } else {
     console.log('Already authenticated!');
     res.sendStatus(200);
   }
 };
 
-module.exports = {
-  authorizeUser,
-  getAccessToken,
+let OAuth = (module.exports = {
   authenticate,
-  tokenType,
-  expiresIn,
-  accessToken,
-  refreshToken,
-};
+  authenticateUser,
+  authenticateUserToken,
+  // MAL user specific data
+  tokenType: null,
+  expiresIn: null,
+  accessToken: null,
+  refreshToken: null,
+});
