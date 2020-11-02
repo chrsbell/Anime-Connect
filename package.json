@@ -6,6 +6,7 @@
   "license": "ISC",
   "scripts": {
     "start": "nodemon server/index.js",
+    "debug": "node --inspect server/index.js",
     "react-dev": "webpack -d --watch",
     "react": "webpack -p"
   },
@@ -36,6 +37,7 @@
     "grommet": "^2.15.2",
     "grommet-icons": "^4.5.0",
     "mongoose": "^4.8.6",
+    "neo4j-driver": "^4.1.2",
     "pkce-challenge": "^2.1.0",
     "qs": "^6.9.4",
     "react": "^17.0.1",
