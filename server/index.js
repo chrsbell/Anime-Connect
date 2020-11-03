@@ -1,8 +1,8 @@
 const express = require('express');
 const db = require('./database-neo4j');
-const OAuth = require('./oauth');
 const animeRoute = require('./routes/anime.js');
 const userRoute = require('./routes/user.js');
+const OAuthRoute = require('./routes/oauth.js');
 
 const app = express();
 
@@ -14,12 +14,8 @@ const staticFiles = express.static(__dirname + '/../react-client/dist');
 app.use('/', staticFiles);
 app.use('/browse/', staticFiles);
 app.use('/connect/', staticFiles);
-
-// Anime info API
-app.use('/anime', animeRoute);
-
-// User API
-app.use('/user', userRoute);
+app.use('/login/', staticFiles);
+app.use('/signup/', staticFiles);
 
 // Anime info API
 app.use('/anime', animeRoute);
@@ -28,7 +24,7 @@ app.use('/anime', animeRoute);
 app.use('/user', userRoute);
 
 // MAL user authentication
-app.use('/oauth', OAuth.authenticate);
+app.use('/oauth', OAuthRoute);
 
 app.listen(3000, function () {
   console.log('Listening at http://localhost:3000');
