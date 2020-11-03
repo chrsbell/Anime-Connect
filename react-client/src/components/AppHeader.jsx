@@ -17,7 +17,7 @@ const AppHeader = ({ history, userData, isLoading }) => {
     <Header background="light-4" pad="medium" height="xsmall">
       <Box direction="row" gap="medium" justify="start">
         <Anchor
-          label="Grommet Tools"
+          label="Anime Connect"
           onClick={() => {
             history.push(Endpoints.home);
           }}
