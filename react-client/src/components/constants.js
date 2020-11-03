@@ -4,6 +4,7 @@ const Endpoints = {
   connect: '/connect/',
   login: '/login/',
   signup: '/signup/',
+  signout: '/signout/',
 };
 
 export { Endpoints };
