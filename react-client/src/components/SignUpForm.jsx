@@ -1,7 +1,6 @@
 import React from 'react';
 import { Endpoints } from './constants.js';
 import history from './history';
-import { grommet } from 'grommet/themes';
 import { Router } from 'react-router';
 import { Box, Button, Grommet, Form, FormField, MaskedInput, Text } from 'grommet';
 import axios from 'axios';

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Endpoints } from './constants.js';
 import history from './history';
-import { grommet } from 'grommet/themes';
 import { Router } from 'react-router';
 import { Box, Button, Grommet, Form, FormField, MaskedInput, Text } from 'grommet';
 import axios from 'axios';
@@ -55,7 +54,7 @@ class LoginForm extends React.Component {
             <Box direction="row" justify="between" margin={{ top: 'medium' }}>
               <Button label="Cancel" />
               <Button type="reset" label="Reset" />
-              <Button type="submit" label="Update" primary />
+              <Button type="submit" label="Login" primary />
             </Box>
           </Form>
         </Box>

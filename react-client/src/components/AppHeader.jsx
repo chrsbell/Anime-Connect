@@ -17,6 +17,7 @@ const AppHeader = ({ history, userData, isLoading }) => {
     <Header background="light-4" pad="medium" height="xsmall">
       <Box direction="row" gap="medium" justify="start">
         <Anchor
+          size="xlarge"
           label="Anime Connect"
           onClick={() => {
             history.push(Endpoints.home);
@@ -60,7 +61,7 @@ const AppHeader = ({ history, userData, isLoading }) => {
               />
             </Box>
           ) : (
-            <Box justify="end" direction="row" gap="medium">
+            <Box justify="end" direction="row" gap="large">
               <Box direction="column" justify="center" align="center">
                 <Anchor
                   onClick={() => {
