@@ -29,13 +29,16 @@ class App extends React.Component {
     // avoid changing the current endpoint when the app is mounted
     const endpoint = window.location.pathname.replace(/\//g, '');
     if (endpoint in Endpoints) {
+      // go straight to content
       history.push(window.location.pathname);
-    } else {
-      history.push(Endpoints.home);
-    }
-    setTimeout(() => {
       this.getAuthenticationStatus();
-    }, 3000);
+    } else {
+      // show the animation first
+      history.push(Endpoints.home);
+      setTimeout(() => {
+        this.getAuthenticationStatus();
+      }, 3000);
+    }
   }
 
   // get the authenticated uesr's basic info
@@ -103,11 +106,13 @@ class App extends React.Component {
     return (
       <Router history={history}>
         <Grommet full theme={customTheme}>
-          {isLoading ? (
-            <Box justify="center" align="center">
-              <SplashPage />
-            </Box>
-          ) : null}
+          <Route path={Endpoints.home}>
+            {isLoading ? (
+              <Box justify="center" align="center">
+                <SplashPage />
+              </Box>
+            ) : null}
+          </Route>
           {!isLoading ? (
             <>
               <AppHeader history={history} userData={userData} isLoading={isLoading} />

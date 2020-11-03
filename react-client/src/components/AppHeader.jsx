@@ -1,7 +1,8 @@
 import React from 'react';
-import { Avatar, Header, Anchor, Box, ResponsiveContext, Menu } from 'grommet';
+import { Avatar, Grommet, Header, Heading, Anchor, Box, ResponsiveContext, Menu } from 'grommet';
 import { Menu as MenuIcon } from 'grommet-icons';
 import { Endpoints } from './constants.js';
+import { customTheme } from './Themes.jsx';
 
 const AppHeader = ({ history, userData, isLoading }) => {
   const isLoggedIn = Boolean(userData.id);
@@ -14,15 +15,16 @@ const AppHeader = ({ history, userData, isLoading }) => {
     src = 'https://a.ppy.sh/';
   }
   return (
-    <Header background="light-4" pad="medium" height="xsmall">
+    <Header background="dark-1" pad="medium" height="xsmall">
       <Box direction="row" gap="medium" justify="start">
-        <Anchor
-          size="xlarge"
-          label="Anime Connect"
-          onClick={() => {
-            history.push(Endpoints.home);
-          }}
-        />
+        <Heading level="1" size="medium">
+          <Anchor
+            onClick={() => {
+              history.push(Endpoints.browse);
+            }}
+            label="Anime Connect"
+          />
+        </Heading>
       </Box>
       <ResponsiveContext.Consumer>
         {(size) =>

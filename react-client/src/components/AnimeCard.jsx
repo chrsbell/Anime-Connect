@@ -12,12 +12,52 @@ import {
   Image,
   Stack,
 } from 'grommet';
+import styled from 'styled-components';
+
+const StyledCard = styled(Card).attrs((props) => {
+  console.log(props.animation);
+  return { className: props.animation };
+})`
+  @keyframes grow {
+    from {
+      transform: scale(1);
+    }
+    to {
+      transform: scale(1.1);
+    }
+  }
+  @keyframes shrink {
+    from {
+      transform: scale(1.1);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  &.grow {
+    animation: grow 200ms linear both;
+  }
+  &.shrink {
+    animation: shrink 200ms linear both;
+  }
+`;
 
 const AnimeCard = ({ entry }) => {
-  // set the animation state using hooks (to do)
-  const [effect, setEffect] = useState('zoomIn');
+  // set the animation state using hooks
+  const [animation, setAnimation] = useState('none');
+
   return (
-    <Card elevation="large" width="medium" animation={effect}>
+    <StyledCard
+      elevation="large"
+      onMouseOver={() => {
+        setAnimation('grow');
+      }}
+      onMouseLeave={() => {
+        setAnimation('shrink');
+      }}
+      width="medium"
+      animation={animation}
+    >
       <Stack anchor="bottom-left">
         <CardBody height="medium">
           <Image fit="cover" src={entry.node.main_picture.large} />
@@ -27,15 +67,16 @@ const AnimeCard = ({ entry }) => {
           background="#000000A0"
           width="medium"
           justify="start"
+          height={{ min: '100px' }}
         >
           <Box>
-            <Heading level="3" margin="none">
+            <Text size="small" margin="none">
               {entry.node.title}
-            </Heading>
+            </Text>
           </Box>
         </CardHeader>
       </Stack>
-    </Card>
+    </StyledCard>
   );
 };
 

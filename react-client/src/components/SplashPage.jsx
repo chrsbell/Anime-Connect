@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Box, Diagram, Grommet, Stack, Text, Heading } from 'grommet';
 import customTheme from './Themes.jsx';
@@ -31,10 +31,14 @@ const SplashPage = () => {
   const [draw, toggleDraw] = useState(true);
   const [fadeAnimation, setFadeAnimation] = useState('fadeIn');
 
-  setTimeout(() => {
-    setFadeAnimation('fadeOut');
-    toggleDraw(false);
-  }, 1400);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setFadeAnimation('fadeOut');
+      toggleDraw(false);
+    }, 1400);
+    // cancel async task that would otherwise try to change state on an unmounted component
+    return () => clearTimeout(timer);
+  }, [toggleDraw, setFadeAnimation]);
 
   const connections = [];
 
