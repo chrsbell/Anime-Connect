@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grommet, Avatar, Header, Anchor, Box, ResponsiveContext, Menu } from 'grommet';
+import { Avatar, Header, Anchor, Box, ResponsiveContext, Menu } from 'grommet';
 import { Menu as MenuIcon } from 'grommet-icons';
 import { Endpoints } from './constants.js';
 
