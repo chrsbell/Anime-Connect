@@ -38,27 +38,41 @@ const customTheme = deepMerge(grommet, {
   },
   global: {
     colors: {
-      brand: '#ED6F00',
-      control: '#ED6F00',
-      focus: '#FFED00',
-      'accent-1': '#9fd4c9',
-      'accent-2': '#d5d848',
-      'dark-1': '#000001',
-      'dark-2': '#646569',
-      'neutral-1': '#646569',
-      'neutral-2': '#004876',
-      'neutral-3': '#004876',
-      'status-critical': '#dd3000',
-      'status-warning': '#f0c954',
-      'status-ok': '#008375',
-      'status-unknown': '#C3C5C8',
-      'status-disabled': '#C3C5C8',
+      brand: '#01a982',
+      focus: '#2AD2C9',
+      'accent-1': '#2AD2C9',
+      'accent-2': '#614767',
+      'accent-3': '#ff8d6d',
+      'neutral-1': '#425563',
+      'neutral-2': '#5F7A76',
+      'neutral-3': '#80746E',
+      'neutral-4': '#767676',
+      'status-critical': '#F04953',
+      'status-error': '#F04953',
+      'status-warning': '#FFD144',
+      'status-ok': '#01a982',
     },
   },
   anchor: {
+    textDecoration: 'none',
     color: {
-      dark: 'brand',
+      dark: '#FFFFFF',
       light: '#000000',
+    },
+  },
+  button: {
+    border: {
+      radius: '0px',
+    },
+  },
+  clock: {
+    analog: {
+      second: {
+        color: {
+          dark: '#01a982',
+          light: '#01a982',
+        },
+      },
     },
   },
 });

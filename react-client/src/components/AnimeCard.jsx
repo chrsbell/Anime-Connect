@@ -15,7 +15,6 @@ import {
 import styled from 'styled-components';
 
 const StyledCard = styled(Card).attrs((props) => {
-  console.log(props.animation);
   return { className: props.animation };
 })`
   @keyframes grow {

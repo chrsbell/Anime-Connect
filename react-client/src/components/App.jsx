@@ -43,20 +43,21 @@ class App extends React.Component {
 
   // get the authenticated uesr's basic info
   getUserData() {
-    axios.get('/user/me').then((res) => {
+    axios.get('/api/user/me').then((res) => {
       this.setState({
         userData: res.data,
-        isLoading: false,
       });
     });
   }
 
   // get a list of top rated anime
   getTopAnime() {
-    axios.get('/anime/ranking').then((res) => {
+    axios.get('/api/anime/ranking').then((res) => {
       if (res.data.length) {
+        history.push(Endpoints.browse);
         this.setState({
           animeList: res.data,
+          isLoading: false,
         });
       }
     });
@@ -64,7 +65,7 @@ class App extends React.Component {
 
   // check whether user is authenticated
   getAuthenticationStatus() {
-    axios.get('/oauth/status').then((res) => {
+    axios.get('/api/oauth/status').then((res) => {
       const { authenticated } = res.data;
       // continue to initialize the app
       if (authenticated) {
@@ -77,7 +78,8 @@ class App extends React.Component {
         },
         () => {
           if (!authenticated) {
-            // couldn't authenticate, so continue without logging in
+            // couldn't authenticate, so prompt user to log in/sign up
+            history.push(Endpoints.login);
             this.setState({
               isLoading: false,
             });
@@ -90,7 +92,7 @@ class App extends React.Component {
   // start the MAL authentication process
   // login details -> authenticate
   authenticate() {
-    axios.get('/oauth/authenticate').then((res) => {
+    axios.get('/api/oauth/authenticate').then((res) => {
       const { redirectURL } = res.data;
       // redirect to MAL OAuth if url was received
       if (redirectURL) {
