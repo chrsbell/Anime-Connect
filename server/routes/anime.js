@@ -22,10 +22,11 @@ router.get('/ranking', async (req, res) => {
   }
 });
 
-// get the user's own anime list and insert to db
-router.get('/my', async (req. res) => {
+// get a user's anime list sorted by score and insert to db
+router.get('/list/:username', async (req, res) => {
+  const { username } = req.params;
   const options = {
-    url: 'https://api.myanimelist.net/v2/users/@me/animelist,
+    url: `https://api.myanimelist.net/v2/users/${username}/animelist?fields=list_status,rank&limit=50&sort=list_score`,
     method: 'get',
     headers: {
       Authorization: `Bearer ${OAuth.accessToken}`,
@@ -34,11 +35,14 @@ router.get('/my', async (req. res) => {
   const api_res = await axios(options);
   debugger;
   if (api_res.status === 200) {
+    api_res.data.data.forEach(async (entry) => {
+      await db.addUserAnime(username, entry);
+    });
     res.status(200).send(api_res.data.data);
   } else {
     res.sendStatus(401);
   }
-})
+});
 
 // get details of an anime
 router.get('/details/:id', async (req, res) => {
@@ -54,10 +58,10 @@ router.get('/details/:id', async (req, res) => {
   debugger;
   if (api_res.status === 200) {
     db.addAnime(api_res.data);
+    res.status(200).send(api_res.data);
   } else {
     res.sendStatus(401);
   }
-  res.sendStatus(200);
 });
 
 // get anime by season

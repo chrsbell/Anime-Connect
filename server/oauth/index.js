@@ -1,13 +1,12 @@
 const pkceChallenge = require('pkce-challenge');
 const axios = require('axios');
-const { client_id, client_secret } = require('./credentials.js');
+const { client_id, client_secret, testToken } = require('./credentials.js');
 const _ = require('underscore');
 const qs = require('qs');
 
 // Code verifier should be set equal to code verifier for plain type transformation
 let code_challenge = pkceChallenge(128).code_challenge;
 let code_verifier = code_challenge;
-let code = null;
 
 // Get an authorization code from MAL
 const authenticateUser = async (req, res) => {
@@ -37,7 +36,7 @@ const authenticateUserToken = async (req, res) => {
     data: qs.stringify({
       client_id,
       client_secret,
-      code,
+      code: OAuth.code,
       code_verifier,
       grant_type: 'authorization_code',
     }),
@@ -46,13 +45,12 @@ const authenticateUserToken = async (req, res) => {
   OAuth.tokenType = data.token_type;
   OAuth.expiresIn = data.expires_in;
   OAuth.accessToken = data.access_token;
-  console.log(data.access_token);
+  // console.log(data.access_token);
   OAuth.refreshToken = data.refresh_token;
   res.redirect('/');
 };
 
 // Authenticate a user first, then get the access token
-// todo: save user's token data to mongo (associate with user id)
 const authenticate = async (req, res) => {
   // check if a code was received
   const error = req.query.error;
@@ -62,12 +60,13 @@ const authenticate = async (req, res) => {
   }
 
   // try getting the authorization code from the url
-  if (!code) {
-    code = req.query.code;
+  if (!OAuth.code) {
+    OAuth.code = req.query.code;
   }
-  if (!code) {
+  if (!OAuth.code) {
     await authenticateUser(req, res);
-  } else if (!OAuth.accessToken) {
+  }
+  if (!OAuth.accessToken) {
     await authenticateUserToken(req, res);
   } else {
     console.log('Already authenticated!');
@@ -79,9 +78,10 @@ let OAuth = (module.exports = {
   authenticate,
   authenticateUser,
   authenticateUserToken,
+  code: null,
   // MAL user specific data
   tokenType: null,
   expiresIn: null,
-  accessToken: null,
+  accessToken: testToken,
   refreshToken: null,
 });

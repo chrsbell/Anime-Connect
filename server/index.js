@@ -18,20 +18,20 @@ app.use('/login/', staticFiles);
 app.use('/signup/', staticFiles);
 
 // Anime info API
-app.use('/anime', animeRoute);
+app.use('/api/anime', animeRoute);
 
 // User API
-app.use('/user', userRoute);
+app.use('/api/user', userRoute);
 
 // MAL user authentication
-app.use('/oauth', OAuthRoute);
+app.use('/api/oauth', OAuthRoute);
 
 app.listen(3000, function () {
   console.log('Listening at http://localhost:3000');
 });
 
 const closeServer = () => {
-  db.close();
+  db.closeDriver();
   // console.log(db.session);
   process.exit();
 };
