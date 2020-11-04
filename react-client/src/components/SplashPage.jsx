@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
 import { Box, Diagram, Grommet, Stack, Text, Heading } from 'grommet';
-import customTheme from './Themes.jsx';
 import { User } from 'grommet-icons';
 
 const connection = (fromTarget, toTarget, { ...rest } = {}) => ({

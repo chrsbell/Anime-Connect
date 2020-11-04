@@ -10,6 +10,7 @@ import AnimeList from './AnimeList.jsx';
 import SignUpForm from './SignUpForm.jsx';
 import LoginForm from './LoginForm.jsx';
 import SplashPage from './SplashPage.jsx';
+import SuggestedFriendsList from './SuggestedFriendsList.jsx';
 
 class App extends React.Component {
   constructor(props) {
@@ -19,6 +20,7 @@ class App extends React.Component {
       userData: {},
       animeList: [],
       isLoading: true,
+      suggestedFriends: [],
     };
     this.authenticate = this.authenticate.bind(this);
     this.getAuthenticationStatus = this.getAuthenticationStatus.bind(this);
@@ -103,7 +105,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { authenticated, animeList, userData, isLoading } = this.state;
+    const { authenticated, animeList, userData, isLoading, suggestedFriends } = this.state;
     console.log(isLoading);
     return (
       <Router history={history}>
@@ -120,6 +122,9 @@ class App extends React.Component {
               <AppHeader history={history} userData={userData} isLoading={isLoading} />
               <Route path={Endpoints.browse}>
                 {authenticated ? <AnimeList list={animeList} /> : null}
+              </Route>
+              <Route path={Endpoints.connect}>
+                <SuggestedFriendsList me={userData} />
               </Route>
               <Route path={Endpoints.login}>
                 <LoginForm history={history} authenticate={this.authenticate} />

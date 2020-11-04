@@ -7,7 +7,7 @@ const AnimeList = ({ list }) => {
   const size = useContext(ResponsiveContext);
   return (
     <Box pad="large">
-      <Grid columns={size !== 'small' ? 'small' : '100%'} gap="medium">
+      <Grid columns={size !== 'small' ? 'medium' : '100%'} gap="medium">
         <InfiniteScroll items={list}>
           {(item) => <AnimeCard key={item.node.id} entry={item} />}
         </InfiniteScroll>

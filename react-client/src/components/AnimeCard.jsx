@@ -54,27 +54,25 @@ const AnimeCard = ({ entry }) => {
       onMouseLeave={() => {
         setAnimation('shrink');
       }}
-      width="medium"
+      width="300px"
+      height="450px"
       animation={animation}
     >
-      <Stack anchor="bottom-left">
-        <CardBody height="medium">
-          <Image fit="cover" src={entry.node.main_picture.large} />
-        </CardBody>
-        <CardHeader
-          pad={{ horizontal: 'small', vertical: 'small' }}
-          background="#000000A0"
-          width="medium"
-          justify="start"
-          height={{ min: '100px' }}
-        >
-          <Box>
-            <Text size="small" margin="none">
-              {entry.node.title}
-            </Text>
-          </Box>
-        </CardHeader>
-      </Stack>
+      <CardBody height="medium">
+        <Image fit="cover" src={entry.node.main_picture.large} />
+      </CardBody>
+      <CardHeader
+        pad={{ horizontal: 'small', vertical: 'small' }}
+        background="#000000A0"
+        width="medium"
+        justify="start"
+      >
+        <Box>
+          <Text size="small" margin="none">
+            {entry.node.title}
+          </Text>
+        </Box>
+      </CardHeader>
     </StyledCard>
   );
 };
