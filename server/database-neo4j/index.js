@@ -12,13 +12,21 @@ const addAnime = async (data) => {
   let session = driver.session({
     database: 'anilist',
   });
-  debugger;
   try {
     const res = await session.run(
-      `MERGE (a:Anime {title : '${data.title}', rank: ${data.rank}}) RETURN a.title as title`
+      `MERGE (a:Anime {title : $title})
+       ON CREATE SET a = {title : $title, rank: $rank, main_picture: $main_picture}
+       ON MATCH SET a += {rank: $rank, main_picture: $main_picture}
+       RETURN a.title as title, a.rank as rank, a.main_picture as main_picture`,
+      {
+        title: data.node.title,
+        rank: data.ranking.rank,
+        main_picture: data.node.main_picture.medium,
+      }
     );
     res.records.forEach((record) => {
-      console.log(record.get('title'));
+      console.log('Inserted record: ');
+      console.table([record.get('title'), record.get('rank'), record.get('main_picture')]);
     });
     await session.close();
   } catch (err) {
@@ -61,10 +69,12 @@ const addUserAnime = async (name, data) => {
     res = await session.run(
       `
       MATCH (u:User {name: $name})
-      MERGE (a:Anime {title : $title, rank: $rank}) // add/update the anime if necessary
+      MERGE (a:Anime {title : $title}) // add/update the anime if necessary
+      ON MATCH SET a += {rank: $rank, main_picture: $main_picture}
       MERGE (u)-[r:WATCHED {user_rating: $user_rating, num_episodes_watched: $num_episodes_watched}]->(a) RETURN r`, // add/update the relationship
       {
         name: name.toLowerCase(),
+        main_picture: data.node.main_picture.medium,
         title: data.node.title,
         rank: data.node.rank,
         user_rating: data.list_status.score,
@@ -72,6 +82,7 @@ const addUserAnime = async (name, data) => {
       }
     );
     res.records.forEach((record) => {
+      console.log('Added relation:');
       console.log(record.get('r'));
     });
     await session.close();
@@ -86,8 +97,9 @@ const findAnimeInCommon = async (name) => {
     database: 'anilist',
   });
   try {
+    // match all patterns up to two nodes deep
     const res = await session.run(
-      `MATCH p = (u:User)-[*..2]->(a:Anime)<-[*..2]-(b:User) WITH *, relationships(p) as userStats WHERE u.name=$name RETURN a.title AS anime, b.name AS friend, userStats`,
+      `MATCH p = (u:User)-[*..2]->(a:Anime)<-[*..2]-(b:User) WITH *, relationships(p) as userStats WHERE u.name=$name RETURN a AS anime, b AS friend, userStats`,
       {
         name: name.toLowerCase(),
       }
@@ -95,9 +107,14 @@ const findAnimeInCommon = async (name) => {
     /*
       {
         username: {
+          userInfo: {
+            joined_at: String,
+            name: String,
+            picture: String,
+          }
           animeInCommon: 7,
           anime: [{
-              name,
+              animeInfo: {},
               myStats: {},
               friendStats: {},
           }]
@@ -105,24 +122,26 @@ const findAnimeInCommon = async (name) => {
       }
 
     */
+    console.log('Found shared anime:');
     console.table(res.records);
     let commonalities = {};
     res.records.forEach((record) => {
       let userStats = record.get('userStats');
-      let friend = record.get('friend');
+      let user = record.get('friend').properties;
       let animeRecord = {
-        name: record.get('anime'),
+        animeInfo: record.get('anime').properties,
         myStats: userStats[0].properties,
         friendStats: userStats[1].properties,
       };
-      if (commonalities[friend] === undefined) {
-        commonalities[friend] = {
+      if (commonalities[user.name] === undefined) {
+        commonalities[user.name] = {
+          userInfo: user,
           animeInCommon: 1,
           anime: [animeRecord],
         };
       } else {
-        commonalities[friend].animeInCommon += 1;
-        commonalities[friend].anime.push(animeRecord);
+        commonalities[user.name].animeInCommon += 1;
+        commonalities[user.name].anime.push(animeRecord);
       }
     });
 
