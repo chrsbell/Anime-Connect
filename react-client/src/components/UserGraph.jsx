@@ -7,7 +7,6 @@ const UserGraph = ({ me, users }) => {
   let data = { nodes: [], links: [] };
   // add yourself
   data.nodes.push({ id: me.name, me: me });
-  debugger;
   users.forEach((user) => {
     // add the other user
     data.nodes.push({ id: user[0], user: user[1].userInfo });

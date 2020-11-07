@@ -15,7 +15,6 @@ const connection = (fromTarget, toTarget, { ...rest } = {}) => ({
 });
 
 const UserContainer = ({ id, align }) => {
-  console.log(id);
   return (
     <Box align={align || 'center'} alignSelf="center" direction="row" gap="medium" key={id}>
       <User id={id} size="xlarge" color="neutral-3" />

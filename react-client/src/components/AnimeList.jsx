@@ -1,38 +1,13 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import AnimeCard from './AnimeCard.jsx';
+import AnimeEntryModal from './AnimeEntryModal.jsx';
 import { Box, Text, Heading, Image, Grid, ResponsiveContext, DataTable } from 'grommet';
 import styled from 'styled-components';
-import _ from 'underscore';
 
-const AnimeList = () => {
-  const size = useContext(ResponsiveContext);
-  let [animeList, setAnimeList] = useState([]);
-
-  // component mount
-  useEffect(() => {
-    return getTopAnime();
-  }, []);
-
-  // gets a list of top rated anime
-  const getTopAnime = () => {
-    let source = axios.CancelToken.source();
-    axios
-      .get('/api/anime/ranking', { cancelToken: source.token })
-      .then((res) => {
-        if (res.data.length) {
-          setAnimeList(
-            _.map(res.data, (info) => {
-              return _.extend({}, info.node, info.ranking);
-            })
-          );
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-    return () => source.cancel('Cancelled /api/anime/ranking request during component unmount.');
-  };
+const AnimeList = ({ animeList }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [currentListing, setCurrentListing] = useState(null);
 
   // table columns
   const columns = [
@@ -41,29 +16,65 @@ const AnimeList = () => {
       header: null,
       align: 'start',
       primary: true,
-      render: (datum) => <AnimeCard entry={datum} />,
+      render: (datum) => <AnimeCard src={datum.main_picture.medium} />,
     },
     {
       property: 'title',
-      header: <Heading size="medium">Title</Heading>,
+      header: <Heading size="small">Title</Heading>,
     },
     {
       property: 'rank',
-      header: <Heading size="medium">Rank</Heading>,
+      header: <Heading size="small">Rank</Heading>,
+      align: 'end',
+    },
+    {
+      property: 'year',
+      header: <Heading size="small">Year</Heading>,
+      render: (datum) => <Text size="xlarge">{datum.start_season.year}</Text>,
+      align: 'end',
+    },
+    {
+      property: 'season',
+      header: <Heading size="small">Season</Heading>,
+      render: (datum) => <Text size="xlarge">{datum.start_season.season}</Text>,
+      align: 'end',
+    },
+    {
+      property: 'genres',
+      header: <Heading size="small">Genres</Heading>,
+      render: (datum) => datum.genres.map((genre) => <Text size="xlarge">{genre.name}</Text>),
       align: 'end',
     },
   ];
 
+  const getDetailedAnimeData = (id) => {
+    axios
+      .get(`/api/anime/details/${id}`)
+      .then((res) => {
+        setCurrentListing(res.data);
+        setShowModal(true);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  };
+
   return (
-    <Box align="center" pad="medium">
+    <Box align="center" animation={['fadeIn', 'slideUp']} pad="medium">
+      {showModal && currentListing ? (
+        <AnimeEntryModal setShowModal={setShowModal} entry={currentListing} />
+      ) : null}
       <DataTable
-        onClickRow={() => null}
+        onClickRow={(e) => {
+          getDetailedAnimeData(e.datum.id);
+        }}
         border={{
           color: 'border',
           side: 'horizontal',
           size: '1px',
         }}
-        step={10}
+        step={50}
+        onMore={() => null}
         columns={columns}
         data={animeList}
       />

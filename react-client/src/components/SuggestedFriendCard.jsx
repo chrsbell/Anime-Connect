@@ -42,9 +42,18 @@ const SuggestedFriendCard = ({ me, user }) => {
           </Card>
         </Box>
         <Box direction="row">
-          <Button align="center" pad="medium" label={`View ${capitalizedName}'s MAL`} />
+          <Button
+            size="small"
+            align="center"
+            pad="medium"
+            onClick={() => {
+              window.open(`https://myanimelist.net/profile/${user[0]}`);
+            }}
+            label={`View ${capitalizedName}'s MAL`}
+          />
           <Button
             pad="medium"
+            size="small"
             onClick={() => {
               toggleRender(true);
             }}

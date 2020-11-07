@@ -7,7 +7,8 @@ const db = require('../database-neo4j');
 // get anime by ranking
 router.get('/ranking', async (req, res) => {
   const options = {
-    url: 'https://api.myanimelist.net/v2/anime/ranking?ranking_type=all&limit=50',
+    url:
+      'https://api.myanimelist.net/v2/anime/ranking?ranking_type=all&limit=50&fields=title,rank,genres,main_picture,start_season',
     method: 'get',
     headers: {
       Authorization: `Bearer ${OAuth.accessToken}`,
@@ -36,7 +37,6 @@ router.get('/list/:username', async (req, res) => {
     },
   };
   const api_res = await axios(options);
-  debugger;
   if (api_res.status === 200) {
     api_res.data.data.forEach(async (entry) => {
       await db.addUserAnime(username, entry);
@@ -58,7 +58,6 @@ router.get('/details/:id', async (req, res) => {
     },
   };
   const api_res = await axios(options);
-  debugger;
   if (api_res.status === 200) {
     db.addAnime(api_res.data);
     res.status(200).send(api_res.data);

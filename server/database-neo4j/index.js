@@ -1,6 +1,6 @@
 const neo4j = require('neo4j-driver');
 const { user, password } = require('./credentials.js');
-
+const _ = require('underscore');
 const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic(user, password));
 
 const closeDriver = async () => {
@@ -9,23 +9,34 @@ const closeDriver = async () => {
 
 // add/update an anime to the database
 const addAnime = async (data) => {
+  let anime = {};
+  if (!data.node) {
+    // was a request from anime list api
+    _.extend(anime, data);
+    anime.rank = data.rank;
+  } else {
+    // was a request from anime details api
+    _.extend(anime, data.node);
+    anime.rank = data.ranking.rank;
+  }
   let session = driver.session({
     database: 'anilist',
   });
   try {
     const res = await session.run(
       `MERGE (a:Anime {title : $title})
-       ON CREATE SET a = {title : $title, rank: $rank, main_picture: $main_picture}
-       ON MATCH SET a += {rank: $rank, main_picture: $main_picture}
+       ON CREATE SET a = {mal_id : $mal_id, title : $title, rank: $rank, main_picture: $main_picture}
+       ON MATCH SET a += {mal_id : $mal_id, rank: $rank, main_picture: $main_picture}
        RETURN a.title as title, a.rank as rank, a.main_picture as main_picture`,
       {
-        title: data.node.title,
-        rank: data.ranking.rank,
-        main_picture: data.node.main_picture.medium,
+        mal_id: anime.id,
+        title: anime.title,
+        rank: anime.rank,
+        main_picture: anime.main_picture.medium,
       }
     );
     res.records.forEach((record) => {
-      console.log('Inserted record: ');
+      console.log('Inserted/Updated record: ');
       console.table([record.get('title'), record.get('rank'), record.get('main_picture')]);
     });
     await session.close();
@@ -62,6 +73,7 @@ const addUser = async (data) => {
 
 // add/update user's anime list to the database as relation
 const addUserAnime = async (name, data) => {
+  debugger;
   let session = driver.session({
     database: 'anilist',
   });
@@ -70,9 +82,10 @@ const addUserAnime = async (name, data) => {
       `
       MATCH (u:User {name: $name})
       MERGE (a:Anime {title : $title}) // add/update the anime if necessary
-      ON MATCH SET a += {rank: $rank, main_picture: $main_picture}
+      ON MATCH SET a += {mal_id : $mal_id, rank: $rank, main_picture: $main_picture}
       MERGE (u)-[r:WATCHED {user_rating: $user_rating, num_episodes_watched: $num_episodes_watched}]->(a) RETURN r`, // add/update the relationship
       {
+        mal_id: data.node.id,
         name: name.toLowerCase(),
         main_picture: data.node.main_picture.medium,
         title: data.node.title,
