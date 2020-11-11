@@ -1,21 +1,9 @@
 import React, { useState } from 'react';
-import {
-  Avatar,
-  Box,
-  Card,
-  Heading,
-  CardBody,
-  CardHeader,
-  Grid,
-  Grommet,
-  Text,
-  Image,
-  Stack,
-} from 'grommet';
+import { Text, Image, Layer, Box } from 'grommet';
 import styled from 'styled-components';
 
-const StyledCard = styled(Card).attrs((props) => {
-  return { className: props.animation };
+const StyledImage = styled(Image).attrs((props) => {
+  return { className: props.hoverClass };
 })`
   @keyframes grow {
     from {
@@ -41,41 +29,25 @@ const StyledCard = styled(Card).attrs((props) => {
   }
 `;
 
-const AnimeCard = ({ entry }) => {
-  // set the animation state using hooks
-  const [animation, setAnimation] = useState('none');
+const AnimeCard = ({ src }) => {
+  const [hoverClass, setHoverClass] = useState(null);
 
   return (
-    <StyledCard
-      elevation="large"
-      onMouseOver={() => {
-        setAnimation('grow');
-      }}
-      onMouseLeave={() => {
-        setAnimation('shrink');
-      }}
-      width="medium"
-      animation={animation}
-    >
-      <Stack anchor="bottom-left">
-        <CardBody height="medium">
-          <Image fit="cover" src={entry.node.main_picture.large} />
-        </CardBody>
-        <CardHeader
-          pad={{ horizontal: 'small', vertical: 'small' }}
-          background="#000000A0"
-          width="medium"
-          justify="start"
-          height={{ min: '100px' }}
-        >
-          <Box>
-            <Text size="small" margin="none">
-              {entry.node.title}
-            </Text>
-          </Box>
-        </CardHeader>
-      </Stack>
-    </StyledCard>
+    <>
+      <StyledImage
+        onMouseOver={() => {
+          setHoverClass('grow');
+        }}
+        onMouseLeave={() => {
+          setHoverClass('shrink');
+        }}
+        hoverClass={hoverClass}
+        fit="contain"
+        width="small"
+        round="false"
+        src={src}
+      />
+    </>
   );
 };
 

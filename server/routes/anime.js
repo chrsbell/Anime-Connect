@@ -7,15 +7,19 @@ const db = require('../database-neo4j');
 // get anime by ranking
 router.get('/ranking', async (req, res) => {
   const options = {
-    url: 'https://api.myanimelist.net/v2/anime/ranking?ranking_type=all&limit=50',
+    url:
+      'https://api.myanimelist.net/v2/anime/ranking?ranking_type=all&limit=50&fields=title,rank,genres,main_picture,start_season',
     method: 'get',
     headers: {
       Authorization: `Bearer ${OAuth.accessToken}`,
     },
   };
   const api_res = await axios(options);
-  debugger;
   if (api_res.status === 200) {
+    // add each entry
+    api_res.data.data.forEach(async (entry) => {
+      await db.addAnime(entry);
+    });
     res.status(200).send(api_res.data.data);
   } else {
     res.sendStatus(401);
@@ -26,14 +30,13 @@ router.get('/ranking', async (req, res) => {
 router.get('/list/:username', async (req, res) => {
   const { username } = req.params;
   const options = {
-    url: `https://api.myanimelist.net/v2/users/${username}/animelist?fields=list_status,rank&limit=50&sort=list_score`,
+    url: `https://api.myanimelist.net/v2/users/${username}/animelist?fields=list_status,rank,main_picture&limit=50&sort=list_score`,
     method: 'get',
     headers: {
       Authorization: `Bearer ${OAuth.accessToken}`,
     },
   };
   const api_res = await axios(options);
-  debugger;
   if (api_res.status === 200) {
     api_res.data.data.forEach(async (entry) => {
       await db.addUserAnime(username, entry);
@@ -55,7 +58,6 @@ router.get('/details/:id', async (req, res) => {
     },
   };
   const api_res = await axios(options);
-  debugger;
   if (api_res.status === 200) {
     db.addAnime(api_res.data);
     res.status(200).send(api_res.data);

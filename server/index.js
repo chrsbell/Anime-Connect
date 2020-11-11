@@ -16,6 +16,7 @@ app.use('/browse/', staticFiles);
 app.use('/connect/', staticFiles);
 app.use('/login/', staticFiles);
 app.use('/signup/', staticFiles);
+app.use('/signout/', staticFiles);
 
 // Anime info API
 app.use('/api/anime', animeRoute);

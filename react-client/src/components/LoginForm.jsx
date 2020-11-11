@@ -50,7 +50,7 @@ class LoginForm extends React.Component {
         <Box background="#F7F7F7" direction="column" width="large" gap="medium" pad="medium">
           <Form validate="blur" onSubmit={this.submit}>
             <FormFieldLabel label="username" name="username" required />
-            <FormFieldLabel label="password" name="password" required />
+            <FormFieldLabel type="password" label="password" name="password" required />
             <Box direction="row" justify="between" margin={{ top: 'medium' }}>
               <Button label="Cancel" />
               <Button type="reset" label="Reset" />

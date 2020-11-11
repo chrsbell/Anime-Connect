@@ -82,6 +82,7 @@ class SignUpForm extends React.Component {
             <FormFieldLabel
               label="password"
               name="password"
+              type="password"
               required
               validate={[
                 {

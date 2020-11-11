@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { Grommet, Box } from 'grommet';
+import { Grommet, Box, grommet } from 'grommet';
 import { customTheme } from './Themes.jsx';
 import { Router, Route } from 'react-router';
 import history from './history';
@@ -10,129 +10,146 @@ import AnimeList from './AnimeList.jsx';
 import SignUpForm from './SignUpForm.jsx';
 import LoginForm from './LoginForm.jsx';
 import SplashPage from './SplashPage.jsx';
+import SuggestedFriendsList from './SuggestedFriendsList.jsx';
+import _ from 'underscore';
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      authenticated: false,
-      userData: {},
-      animeList: [],
-      isLoading: true,
-    };
-    this.authenticate = this.authenticate.bind(this);
-    this.getAuthenticationStatus = this.getAuthenticationStatus.bind(this);
-    this.animeList = React.createRef();
-  }
+const App = () => {
+  // whether user is authenticated using MAL
+  let [authenticated, setAuthenticated] = useState(false);
+  // the user's information
+  let [userData, setUserData] = useState({});
+  // whether app has either authenticated or finished displaying splash animation
+  let [isLoading, setLoading] = useState(true);
+  // current list of anime
+  let [animeList, setAnimeList] = useState([]);
 
-  componentDidMount() {
+  let splashPageRef = useRef(null);
+
+  // component mount
+  useEffect(() => {
     // avoid changing the current endpoint when the app is mounted
-    const endpoint = window.location.pathname.replace(/\//g, '');
-    if (endpoint in Endpoints) {
-      // go straight to content
-      history.push(window.location.pathname);
-      this.getAuthenticationStatus();
-    } else {
-      // show the animation first
-      history.push(Endpoints.home);
-      setTimeout(() => {
-        this.getAuthenticationStatus();
-      }, 3000);
-    }
-  }
+    setTimeout(() => {
+      const endpoint = window.location.pathname.replace(/\//g, '');
+      if (endpoint in Endpoints) {
+        // go straight to content
+        history.push(window.location.pathname);
+      } else {
+        // go to home
+        history.push(Endpoints.home);
+      }
+      return getAuthenticationStatus();
+    }, 3000);
+  }, []);
 
-  // get the authenticated uesr's basic info
-  getUserData() {
-    axios.get('/api/user/me').then((res) => {
-      this.setState({
-        userData: res.data,
+  // gets the authenticated user's basic info
+  const getUserData = () => {
+    let source = axios.CancelToken.source();
+    axios
+      .get('/api/user/me', { cancelToken: source.token })
+      .then((res) => {
+        setUserData(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
       });
-    });
-  }
+    return () => source.cancel('Cancelled /api/user/me request during component unmount.');
+  };
 
-  // get a list of top rated anime
-  getTopAnime() {
-    axios.get('/api/anime/ranking').then((res) => {
-      if (res.data.length) {
-        history.push(Endpoints.browse);
-        this.setState({
-          animeList: res.data,
-          isLoading: false,
-        });
-      }
-    });
-  }
-
-  // check whether user is authenticated
-  getAuthenticationStatus() {
-    axios.get('/api/oauth/status').then((res) => {
-      const { authenticated } = res.data;
+  // checks whether user is authenticated
+  const getAuthenticationStatus = () => {
+    let source = axios.CancelToken.source();
+    axios.get('/api/oauth/status', { cancelToken: source.token }).then((res) => {
       // continue to initialize the app
-      if (authenticated) {
-        this.getUserData();
-        this.getTopAnime();
-      }
-      this.setState(
-        {
-          authenticated,
-        },
-        () => {
-          if (!authenticated) {
-            // couldn't authenticate, so prompt user to log in/sign up
-            history.push(Endpoints.login);
-            this.setState({
-              isLoading: false,
-            });
-          }
+      setAuthenticated(res.data);
+    });
+    return () => source.cancel('Cancelled /api/oauth/status request during component unmount.');
+  };
+
+  // gets a list of top rated anime
+  const getTopAnime = () => {
+    let source = axios.CancelToken.source();
+    axios
+      .get('/api/anime/ranking', { cancelToken: source.token })
+      .then((res) => {
+        if (res.data.length) {
+          setAnimeList(
+            _.map(res.data, (info) => {
+              return _.extend({}, info.node, info.ranking);
+            })
+          );
         }
-      );
-    });
-  }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+    return () => source.cancel('Cancelled /api/anime/ranking request during component unmount.');
+  };
 
-  // start the MAL authentication process
-  // login details -> authenticate
-  authenticate() {
-    axios.get('/api/oauth/authenticate').then((res) => {
-      const { redirectURL } = res.data;
-      // redirect to MAL OAuth if url was received
-      if (redirectURL) {
-        console.log(redirectURL);
-        window.location.href = redirectURL;
-      }
-    });
-  }
+  // after successful authentication, get the user's data
+  useEffect(() => {
+    if (authenticated) {
+      // get the user's information and navigate to browse
+      setLoading(false);
+      history.push(Endpoints.browse);
+      const userCancel = getUserData();
+      const animeListCancel = getTopAnime();
+      return () => {
+        userCancel();
+        animeList();
+      };
+    }
+  }, [authenticated]);
 
-  render() {
-    const { authenticated, animeList, userData, isLoading } = this.state;
-    console.log(isLoading);
-    return (
-      <Router history={history}>
-        <Grommet full theme={customTheme}>
-          <Route path={Endpoints.home}>
-            {isLoading ? (
-              <Box justify="center" align="center">
-                <SplashPage />
-              </Box>
-            ) : null}
-          </Route>
-          {!isLoading ? (
-            <>
-              <AppHeader history={history} userData={userData} isLoading={isLoading} />
-              <Route path={Endpoints.browse}>
-                {authenticated ? <AnimeList list={animeList} /> : null}
-              </Route>
-              <Route path={Endpoints.login}>
-                <LoginForm history={history} authenticate={this.authenticate} />
-              </Route>
-              <Route path={Endpoints.signup}>
-                <SignUpForm history={history} authenticate={this.authenticate} />
-              </Route>
-            </>
+  // starts the MAL authentication process
+  const authenticate = () => {
+    let source = axios.CancelToken.source();
+    axios
+      .get('/api/oauth/authenticate')
+      .then((res) => {
+        const { redirectURL } = res.data;
+        // redirect to MAL OAuth if url was received
+        if (redirectURL) {
+          window.location.href = redirectURL;
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+    return () =>
+      source.cancel('Cancelled /api/oauth/authenticate request during component unmount.');
+  };
+
+  console.log('Re-rendered the App!');
+  return (
+    <Router history={history}>
+      <Grommet full theme={customTheme}>
+        <Route path={Endpoints.home}>
+          {isLoading ? (
+            <Box justify="center" align="center">
+              <SplashPage />
+            </Box>
           ) : null}
-        </Grommet>
-      </Router>
-    );
-  }
-}
+        </Route>
+        {!isLoading ? (
+          <Box fill>
+            <AppHeader history={history} userData={userData} isLoading={isLoading} />
+            <Route path={Endpoints.browse}>
+              {authenticated ? <AnimeList animeList={animeList} /> : null}
+            </Route>
+            <Route path={Endpoints.connect}>
+              {authenticated ? <SuggestedFriendsList me={userData} /> : null}
+            </Route>
+            <Route path={Endpoints.login}>
+              <LoginForm history={history} authenticate={authenticate} />
+            </Route>
+            <Route path={Endpoints.signup}>
+              <SignUpForm history={history} authenticate={authenticate} />
+            </Route>
+          </Box>
+        ) : null}
+      </Grommet>
+    </Router>
+  );
+};
 
 export default App;

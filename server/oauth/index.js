@@ -45,7 +45,7 @@ const authenticateUserToken = async (req, res) => {
   OAuth.tokenType = data.token_type;
   OAuth.expiresIn = data.expires_in;
   OAuth.accessToken = data.access_token;
-  // console.log(data.access_token);
+  console.log(data.access_token);
   OAuth.refreshToken = data.refresh_token;
   res.redirect('/');
 };
@@ -82,6 +82,6 @@ let OAuth = (module.exports = {
   // MAL user specific data
   tokenType: null,
   expiresIn: null,
-  accessToken: testToken,
+  accessToken: null,
   refreshToken: null,
 });

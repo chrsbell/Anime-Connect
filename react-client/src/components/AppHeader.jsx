@@ -8,10 +8,12 @@ const AppHeader = ({ history, userData, isLoading }) => {
   const isLoggedIn = Boolean(userData.id);
   let src;
   if (isLoading) {
+    // loading gif
     src = 'https://i.imgur.com/yIqQjiD.gif';
   } else if (isLoggedIn) {
     src = userData.picture;
   } else {
+    // placeholder image
     src = 'https://a.ppy.sh/';
   }
   return (
