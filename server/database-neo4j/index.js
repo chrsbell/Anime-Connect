@@ -54,7 +54,10 @@ const addUser = async (data) => {
   });
   try {
     const res = await session.run(
-      `MERGE (u:User {name : $name, joined_at: $joined_at, picture: $picture}) RETURN u.name as name`,
+      `MERGE (u:User {name : $name})
+      ON CREATE SET u = {name : $name, joined_at: $joined_at, picture: $picture}
+      ON MATCH SET u += {joined_at: $joined_at, picture: $picture}
+      RETURN u.name as name`,
       {
         name: data.name.toLowerCase(),
         joined_at: data.joined_at,
@@ -73,7 +76,6 @@ const addUser = async (data) => {
 
 // add/update user's anime list to the database as relation
 const addUserAnime = async (name, data) => {
-  debugger;
   let session = driver.session({
     database: 'anilist',
   });
@@ -81,8 +83,9 @@ const addUserAnime = async (name, data) => {
     res = await session.run(
       `
       MATCH (u:User {name: $name})
-      MERGE (a:Anime {title : $title}) // add/update the anime if necessary
-      ON MATCH SET a += {mal_id : $mal_id, rank: $rank, main_picture: $main_picture}
+      MERGE (a:Anime {title : $title})
+      ON CREATE SET a = {mal_id : $mal_id, title : $title, rank: $rank, main_picture: $main_picture} // add the anime
+      ON MATCH SET a += {mal_id : $mal_id, rank: $rank, main_picture: $main_picture} // update the anime
       MERGE (u)-[r:WATCHED {user_rating: $user_rating, num_episodes_watched: $num_episodes_watched}]->(a) RETURN r`, // add/update the relationship
       {
         mal_id: data.node.id,

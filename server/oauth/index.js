@@ -1,6 +1,6 @@
 const pkceChallenge = require('pkce-challenge');
 const axios = require('axios');
-const { client_id, client_secret, testToken } = require('./credentials.js');
+const { client_id, client_secret, access_token } = require('./credentials.js');
 const _ = require('underscore');
 const qs = require('qs');
 
@@ -82,6 +82,6 @@ let OAuth = (module.exports = {
   // MAL user specific data
   tokenType: null,
   expiresIn: null,
-  accessToken: null,
+  accessToken: access_token,
   refreshToken: null,
 });
