@@ -10,6 +10,11 @@ app.use(express.json());
 
 const staticFiles = express.static(__dirname + '/../react-client/dist');
 
+app.use('/', (req, res, next) => {
+  console.log(`\x1b[34m`, req.originalUrl);
+  next();
+});
+
 // use the same app for all endpoints
 app.use('/', staticFiles);
 app.use('/browse/', staticFiles);

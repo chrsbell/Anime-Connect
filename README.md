@@ -12,7 +12,7 @@
 
 </br>
 
-### Get a MAL authentication code
+### Gets an authentication code from MAL and returns a URL the current user can use to obtain an access token
 
 - GET `/api/oauth/authenticate`
 
@@ -25,7 +25,7 @@
   "redirectURL": "String"
 }
 
-### Get user's OAuth status
+### Gets the current user's authenication status
 
 - GET `/api/oauth/status`
 
@@ -41,9 +41,23 @@
 
 ## _Anime API_
 
+```
+Anime {
+  mal_id: int
+  title: string
+  rank: int
+  genre: string
+  start_season: string
+  main_picture: {
+    medium: string,
+    large: string,
+  }
+}
+```
+
 </br>
 
-### Get a list of top rated anime (refactor with params)
+### Gets a list of top-rated anime
 
 - GET `/api/anime/ranking`
 
@@ -55,6 +69,6 @@
 
 ```json
 {
-  "animeList": "Array"
+  "animeList": "Array[Anime]"
 }
 ```

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Box, Carousel, Button, DataTable, Heading, Avatar, Text } from 'grommet';
 import axios from 'axios';
 import AnimeEntryModal from './AnimeEntryModal.jsx';
@@ -50,17 +50,18 @@ const columns = [
   },
 ];
 
-const SuggestedFriends = ({ me }) => {
+const SuggestedFriends = () => {
   const [suggestedFriends, setSuggestedFriends] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(0);
   const [currentListing, setCurrentListing] = useState(null);
 
-  const getSuggestedFriends = () => {
+  // get friends once component mounts
+  useEffect(() => {
     axios.get('/api/user/suggest').then((res) => {
       setSuggestedFriends(res.data);
     });
-  };
+  }, []);
 
   const getDetailedAnimeData = (id) => {
     axios
@@ -73,11 +74,6 @@ const SuggestedFriends = ({ me }) => {
         console.error(err);
       });
   };
-
-  // get friends once component mounts
-  useEffect(() => {
-    getSuggestedFriends();
-  }, []);
 
   return (
     <Box align="center" size="width" pad="medium">
