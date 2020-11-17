@@ -3,6 +3,7 @@ import { Box, Carousel, Button, DataTable, Heading, Avatar, Text } from 'grommet
 import axios from 'axios';
 import AnimeEntryModal from './AnimeEntryModal.jsx';
 import AnimeCard from './AnimeCard.jsx';
+import { UserContext } from './UserContext.jsx';
 
 // table columns
 const columns = [
@@ -50,17 +51,20 @@ const columns = [
   },
 ];
 
-const SuggestedFriends = ({ me }) => {
+const SuggestedFriends = () => {
+  const { dispatch, userState } = useContext(UserContext);
+
   const [suggestedFriends, setSuggestedFriends] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(0);
   const [currentListing, setCurrentListing] = useState(null);
 
-  const getSuggestedFriends = () => {
+  // get friends once component mounts
+  useEffect(() => {
     axios.get('/api/user/suggest').then((res) => {
       setSuggestedFriends(res.data);
     });
-  };
+  }, []);
 
   const getDetailedAnimeData = (id) => {
     axios
@@ -73,11 +77,6 @@ const SuggestedFriends = ({ me }) => {
         console.error(err);
       });
   };
-
-  // get friends once component mounts
-  useEffect(() => {
-    getSuggestedFriends();
-  }, []);
 
   return (
     <Box align="center" size="width" pad="medium">

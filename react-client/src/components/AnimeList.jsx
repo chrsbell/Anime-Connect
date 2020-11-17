@@ -3,7 +3,6 @@ import axios from 'axios';
 import AnimeCard from './AnimeCard.jsx';
 import AnimeEntryModal from './AnimeEntryModal.jsx';
 import { Box, Text, Heading, Image, Grid, ResponsiveContext, DataTable } from 'grommet';
-import styled from 'styled-components';
 
 const AnimeList = ({ animeList }) => {
   const [showModal, setShowModal] = useState(false);
