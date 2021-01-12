@@ -3,6 +3,7 @@ import { Box, Carousel, Button, DataTable, Heading, Avatar, Text } from 'grommet
 import axios from 'axios';
 import AnimeEntryModal from './AnimeEntryModal.jsx';
 import AnimeCard from './AnimeCard.jsx';
+import { UserContext } from './UserContext.jsx';
 
 // table columns
 const columns = [
