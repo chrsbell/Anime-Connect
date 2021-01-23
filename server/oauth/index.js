@@ -85,6 +85,6 @@ let OAuth = (module.exports = {
   // MAL user specific data
   tokenType: null,
   expiresIn: null,
-  accessToken: null,
+  accessToken: access_token,
   refreshToken: null,
 });

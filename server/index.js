@@ -11,7 +11,7 @@ app.use(express.json());
 const staticFiles = express.static(__dirname + '/../react-client/dist');
 
 app.use('/', (req, res, next) => {
-  console.log(`\x1b[34m`, req.originalUrl);
+  // console.log(`\x1b[34m`, req.originalUrl);
   next();
 });
 

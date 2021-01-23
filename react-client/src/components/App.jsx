@@ -6,18 +6,13 @@ import { customTheme } from './Themes.jsx';
 import { Router, Route } from 'react-router';
 import history from './history';
 import { Endpoints } from './constants.js';
-<<<<<<< HEAD
 import { AppContext } from './AppContext.jsx';
-=======
-import { UserContext } from './UserContext.jsx';
->>>>>>> 67244a859da26710c2aa5e2ffff61ceca82f6b67
 import AppHeader from './AppHeader.jsx';
 import AnimeList from './AnimeList.jsx';
 import SignUpForm from './SignUpForm.jsx';
 import LoginForm from './LoginForm.jsx';
 import SplashPage from './SplashPage.jsx';
 import SuggestedFriendsList from './SuggestedFriendsList.jsx';
-<<<<<<< HEAD
 
 const initialUserState = {
   authenticated: false, // whether user is userState.authenticated using MAL
@@ -41,31 +36,6 @@ const reducer = (state, action) => {
 
 const App = () => {
   const [appState, dispatch] = useReducer(reducer, initialUserState);
-=======
-
-const App = () => {
-  const initialUserState = {
-    authenticated: false, // whether user is userState.authenticated using MAL
-    userData: {}, // the user's information
-  };
-
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case 'authenticate':
-        return {
-          ...state,
-          authenticated: action.authenticated,
-        };
-      case 'userData':
-        return {
-          ...state,
-          userData: action.userData,
-        };
-    }
-  };
-
-  const [userState, dispatch] = useReducer(reducer, initialUserState);
->>>>>>> 67244a859da26710c2aa5e2ffff61ceca82f6b67
   // whether app has either userState.authenticated or finished displaying splash animation
   const [isLoading, setLoading] = useState(true);
   // current list of anime
@@ -127,10 +97,7 @@ const App = () => {
         .get('/api/anime/ranking', { cancelToken: source.token })
         .then((res) => {
           if (res.data.length) {
-<<<<<<< HEAD
             debugger;
-=======
->>>>>>> 67244a859da26710c2aa5e2ffff61ceca82f6b67
             setAnimeList(
               _.map(res.data, (info) => {
                 return _.extend({}, info.node, info.ranking);
@@ -144,11 +111,7 @@ const App = () => {
       return () => source.cancel('Cancelled /api/anime/ranking request during component unmount.');
     };
 
-<<<<<<< HEAD
     if (appState.authenticated === true) {
-=======
-    if (userState.authenticated) {
->>>>>>> 67244a859da26710c2aa5e2ffff61ceca82f6b67
       // get the user's information and navigate to browse
       setLoading(false);
       history.push(Endpoints.browse);
@@ -159,11 +122,7 @@ const App = () => {
         animeListCancel();
       };
     }
-<<<<<<< HEAD
   }, [appState.authenticated]);
-=======
-  }, [userState.authenticated]);
->>>>>>> 67244a859da26710c2aa5e2ffff61ceca82f6b67
 
   // starts the MAL authentication process
   const authenticate = () => {
@@ -197,7 +156,6 @@ const App = () => {
         </Route>
         {!isLoading ? (
           <Box fill>
-<<<<<<< HEAD
             <AppContext.Provider value={{ appState, dispatch }}>
               <AppHeader history={history} />
               <Route path={Endpoints.browse}>
@@ -205,15 +163,6 @@ const App = () => {
               </Route>
               <Route path={Endpoints.connect}>
                 {appState.authenticated ? <SuggestedFriendsList /> : null}
-=======
-            <UserContext.Provider value={{ userState, dispatch }}>
-              {/* <AppHeader history={history} isLoading={isLoading} /> */}
-              <Route path={Endpoints.browse}>
-                {userState.authenticated ? <AnimeList animeList={animeList} /> : null}
-              </Route>
-              <Route path={Endpoints.connect}>
-                {userState.authenticated ? <SuggestedFriendsList /> : null}
->>>>>>> 67244a859da26710c2aa5e2ffff61ceca82f6b67
               </Route>
               <Route path={Endpoints.login}>
                 <LoginForm history={history} authenticate={authenticate} />
@@ -221,11 +170,7 @@ const App = () => {
               <Route path={Endpoints.signup}>
                 <SignUpForm history={history} authenticate={authenticate} />
               </Route>
-<<<<<<< HEAD
             </AppContext.Provider>
-=======
-            </UserContext.Provider>
->>>>>>> 67244a859da26710c2aa5e2ffff61ceca82f6b67
           </Box>
         ) : null}
       </Grommet>

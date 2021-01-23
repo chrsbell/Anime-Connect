@@ -162,7 +162,7 @@ const findAnimeInCommon = async (name) => {
     });
 
     await session.close();
-    // return closest connections first
+    // return closest connections first (most anime shared)
     return Object.entries(commonalities).sort((a, b) => {
       return b[1].animeInCommon - a[1].animeInCommon;
     });
