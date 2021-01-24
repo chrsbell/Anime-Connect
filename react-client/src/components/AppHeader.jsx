@@ -1,20 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { AppContext } from './AppContext.jsx';
 import { Avatar, Grommet, Header, Heading, Anchor, Box, ResponsiveContext, Menu } from 'grommet';
 import { Menu as MenuIcon } from 'grommet-icons';
 import { Endpoints } from './constants.js';
 import { customTheme } from './Themes.jsx';
 
-const AppHeader = ({ history, userData, isLoading }) => {
-  const isLoggedIn = Boolean(userData.id);
+const AppHeader = ({ history }) => {
+  const { appState, dispatch } = useContext(AppContext);
   let src;
-  if (isLoading) {
-    // loading gif
-    src = 'https://i.imgur.com/yIqQjiD.gif';
-  } else if (isLoggedIn) {
-    src = userData.picture;
-  } else {
+  if (!appState.authenticated) {
     // placeholder image
     src = 'https://a.ppy.sh/';
+  } else {
+    src = appState.userData.picture;
   }
   return (
     <Header background="dark-1" pad="medium" height="xsmall">
@@ -82,7 +80,7 @@ const AppHeader = ({ history, userData, isLoading }) => {
                   label="Connect"
                 />
               </Box>
-              {!isLoggedIn ? (
+              {!appState.authenticated ? (
                 <Box direction="column" justify="center" align="center">
                   <Anchor
                     onClick={() => {
@@ -92,7 +90,7 @@ const AppHeader = ({ history, userData, isLoading }) => {
                   />
                 </Box>
               ) : null}
-              {!isLoggedIn ? (
+              {!appState.authenticated ? (
                 <Box direction="column" justify="center" align="center">
                   <Anchor
                     onClick={() => {
@@ -102,7 +100,7 @@ const AppHeader = ({ history, userData, isLoading }) => {
                   />
                 </Box>
               ) : null}
-              {isLoggedIn ? (
+              {appState.authenticated ? (
                 <Box direction="column" justify="center" align="center">
                   <Anchor
                     onClick={() => {

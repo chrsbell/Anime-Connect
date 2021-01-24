@@ -3,7 +3,6 @@ import axios from 'axios';
 import AnimeCard from './AnimeCard.jsx';
 import AnimeEntryModal from './AnimeEntryModal.jsx';
 import { Box, Text, Heading, Image, Grid, ResponsiveContext, DataTable } from 'grommet';
-import styled from 'styled-components';
 
 const AnimeList = ({ animeList }) => {
   const [showModal, setShowModal] = useState(false);
@@ -21,10 +20,12 @@ const AnimeList = ({ animeList }) => {
     {
       property: 'title',
       header: <Heading size="small">Title</Heading>,
+      render: (datum) => <Text size="xlarge">{datum.title}</Text>,
     },
     {
       property: 'rank',
       header: <Heading size="small">Rank</Heading>,
+      render: (datum) => <Text size="xlarge">{datum.rank}</Text>,
       align: 'end',
     },
     {

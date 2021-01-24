@@ -62,7 +62,7 @@ const customTheme = deepMerge(grommet, {
   },
   button: {
     border: {
-      radius: '0px',
+      radius: '10px',
     },
   },
   clock: {

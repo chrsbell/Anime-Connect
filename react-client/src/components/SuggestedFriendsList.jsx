@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Box, Carousel, Button, DataTable, Heading, Avatar, Text } from 'grommet';
 import axios from 'axios';
 import AnimeEntryModal from './AnimeEntryModal.jsx';
 import AnimeCard from './AnimeCard.jsx';
+import { UserContext } from './UserContext.jsx';
 
 // table columns
 const columns = [
@@ -36,31 +37,28 @@ const columns = [
     render: (datum) => <Text size="xlarge">{`${datum.myStats.user_rating}`}</Text>,
     align: 'end',
   },
-  {
-    property: 'their_num_episodes',
-    header: <Heading size="small">Their # Episodes Completed</Heading>,
-    render: (datum) => <Text size="xlarge">{`${datum.friendStats.num_episodes_watched}`}</Text>,
-    align: 'end',
-  },
-  {
-    property: 'my_num_episodes',
-    header: <Heading size="small">My # Episodes Completed</Heading>,
-    render: (datum) => <Text size="xlarge">{`${datum.myStats.num_episodes_watched}`}</Text>,
-    align: 'end',
-  },
 ];
 
-const SuggestedFriends = ({ me }) => {
+const SuggestedFriends = () => {
   const [suggestedFriends, setSuggestedFriends] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentUser, setCurrentUser] = useState(0);
   const [currentListing, setCurrentListing] = useState(null);
 
-  const getSuggestedFriends = () => {
+  // get friends once component mounts
+  useEffect(() => {
     axios.get('/api/user/suggest').then((res) => {
+      res.data.forEach((friend) => {
+        friend[1].anime.sort((a, b) => {
+          let aScore = a.myStats.user_rating + a.friendStats.user_rating;
+          let bScore = b.myStats.user_rating + b.friendStats.user_rating;
+          return bScore - aScore;
+        });
+      });
+      debugger;
       setSuggestedFriends(res.data);
     });
-  };
+  }, []);
 
   const getDetailedAnimeData = (id) => {
     axios
@@ -73,12 +71,6 @@ const SuggestedFriends = ({ me }) => {
         console.error(err);
       });
   };
-
-  // get friends once component mounts
-  useEffect(() => {
-    getSuggestedFriends();
-  }, []);
-
   return (
     <Box align="center" size="width" pad="medium">
       {showModal && currentListing ? (
@@ -86,10 +78,18 @@ const SuggestedFriends = ({ me }) => {
       ) : null}
       {suggestedFriends.length ? (
         <>
-          <Box direction="row" pad="medium" animation="fadeIn" justify="center" align="center">
+          <Box
+            direction="row"
+            margin="medium"
+            pad="medium"
+            animation="fadeIn"
+            justify="center"
+            align="center"
+          >
             <Button
               disabled={currentUser === 0}
               label="Previous User"
+              margin="medium"
               onClick={() => {
                 if (currentUser > 0) {
                   setCurrentUser(currentUser - 1);
@@ -99,10 +99,11 @@ const SuggestedFriends = ({ me }) => {
             <Button href={`https://myanimelist.net/profile/${suggestedFriends[currentUser][0]}`}>
               <Avatar size="large" src={`${suggestedFriends[currentUser][1].userInfo.picture}`} />
             </Button>
-            <Heading size="small">{`You and ${suggestedFriends[currentUser][0]} have both share these anime in common!`}</Heading>
+            <Heading size="small">{`You and ${suggestedFriends[currentUser][0]} love these anime!`}</Heading>
             <Button
               disabled={currentUser === suggestedFriends.length - 1}
               label="Next User"
+              margin="medium"
               onClick={() => {
                 if (currentUser < suggestedFriends.length - 1) {
                   setCurrentUser(currentUser + 1);

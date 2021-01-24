@@ -1,6 +1,6 @@
 const pkceChallenge = require('pkce-challenge');
 const axios = require('axios');
-const { client_id, client_secret, testToken } = require('./credentials.js');
+const { client_id, client_secret, access_token } = require('./credentials.js');
 const _ = require('underscore');
 const qs = require('qs');
 
@@ -51,9 +51,10 @@ const authenticateUserToken = async (req, res) => {
 };
 
 // Authenticate a user first, then get the access token
-const authenticate = async (req, res) => {
+const authenticate = async (req, res, next) => {
   // check if a code was received
   const error = req.query.error;
+  debugger;
   if (error) {
     // the user likely didn't authorize correctly
     res.redirect('/');
@@ -65,9 +66,11 @@ const authenticate = async (req, res) => {
   }
   if (!OAuth.code) {
     await authenticateUser(req, res);
+    next();
   }
   if (!OAuth.accessToken) {
     await authenticateUserToken(req, res);
+    next();
   } else {
     console.log('Already authenticated!');
     res.sendStatus(200);
@@ -82,6 +85,6 @@ let OAuth = (module.exports = {
   // MAL user specific data
   tokenType: null,
   expiresIn: null,
-  accessToken: null,
+  accessToken: access_token,
   refreshToken: null,
 });
